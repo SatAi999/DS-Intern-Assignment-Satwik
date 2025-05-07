@@ -31,6 +31,20 @@ class DataPreprocessor:
         self.scaler = StandardScaler()
         df[numeric_cols] = self.scaler.fit_transform(df[numeric_cols])
         return df
+    
+    # Handling 'unknown' values
+    def preprocess_data(df):
+    # Replace 'unknown' with NaN for any object type column
+      for col in df.select_dtypes(include=['object']).columns:
+         df[col] = df[col].replace('unknown', np.nan)
+
+    # Optionally, impute or drop missing values (for example, using median for numeric columns)
+      df.fillna(df.median(), inplace=True)  # For numerical columns
+      df.fillna(df.mode().iloc[0], inplace=True)  # For categorical columns (like 'unknown' replaced)
+
+      return df
+
+
 
     def preprocess(self, df):
         """Main method to perform preprocessing steps."""
